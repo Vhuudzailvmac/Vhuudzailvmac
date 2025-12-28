@@ -1,17 +1,22 @@
---// Banana Cat Hub Style | FULL VERSION
-local player = game.Players.LocalPlayer
+--// BANANA CAT HUB [PREMIUM] | FULL VERSION
+--// UI + TOGGLE + BANANA SCRIPT
+
+if game.CoreGui:FindFirstChild("BananaCatHub") then
+    game.CoreGui.BananaCatHub:Destroy()
+end
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
 
 -- CONFIG
 local HUB_NAME = "Banana Cat Hub [Premium]"
-local HUB_BY = "by Vhuu"
-local LOGO_ID = "rbxassetid://83190276951914"
-local COLOR_ACCENT = Color3.fromRGB(0,255,200)
+local HUB_GAME = "Blox Fruits"
+local COLOR = Color3.fromRGB(0,255,180)
 
--- GUI
+-- MAIN GUI
 local gui = Instance.new("ScreenGui")
-gui.Name = "BananaHubUI"
-gui.ResetOnSpawn = false
-gui.Parent = player:WaitForChild("PlayerGui")
+gui.Name = "BananaCatHub"
+gui.Parent = game.CoreGui
 
 -- MAIN FRAME
 local main = Instance.new("Frame", gui)
@@ -22,118 +27,98 @@ main.BorderSizePixel = 0
 main.Active = true
 main.Draggable = true
 
--- SIDEBAR
-local sidebar = Instance.new("Frame", main)
-sidebar.Size = UDim2.new(0,210,1,0)
-sidebar.BackgroundColor3 = Color3.fromRGB(22,22,22)
-sidebar.BorderSizePixel = 0
+-- TOP BAR
+local top = Instance.new("Frame", main)
+top.Size = UDim2.new(1,0,0,50)
+top.BackgroundColor3 = Color3.fromRGB(25,25,25)
+top.BorderSizePixel = 0
 
--- LOGO
-local logo = Instance.new("ImageLabel", sidebar)
-logo.Image = LOGO_ID
-logo.Size = UDim2.new(0,70,0,70)
-logo.Position = UDim2.new(0,15,0,15)
-logo.BackgroundTransparency = 1
-
--- TITLE
-local title = Instance.new("TextLabel", sidebar)
-title.Text = HUB_NAME
-title.Position = UDim2.new(0,95,0,25)
-title.Size = UDim2.new(0,110,0,25)
-title.TextColor3 = COLOR_ACCENT
+local title = Instance.new("TextLabel", top)
+title.Text = HUB_NAME.." | "..HUB_GAME
+title.Size = UDim2.new(1,0,1,0)
+title.TextColor3 = COLOR
 title.Font = Enum.Font.GothamBold
 title.TextSize = 18
 title.BackgroundTransparency = 1
-title.TextXAlignment = Left
-
--- BY
-local by = Instance.new("TextLabel", sidebar)
-by.Text = HUB_BY
-by.Position = UDim2.new(0,95,0,50)
-by.Size = UDim2.new(0,110,0,20)
-by.TextColor3 = Color3.fromRGB(180,180,180)
-by.Font = Enum.Font.Gotham
-by.TextSize = 12
-by.BackgroundTransparency = 1
-by.TextXAlignment = Left
 
 -- CONTENT
-local content = Instance.new("Frame", main)
-content.Position = UDim2.new(0,210,0,0)
-content.Size = UDim2.new(1,-210,1,0)
-content.BackgroundColor3 = Color3.fromRGB(15,15,15)
-content.BorderSizePixel = 0
+local content = Instance.new("ScrollingFrame", main)
+content.Position = UDim2.new(0,0,0,50)
+content.Size = UDim2.new(1,0,1,-50)
+content.CanvasSize = UDim2.new(0,0,0,0)
+content.ScrollBarImageTransparency = 1
+content.BackgroundTransparency = 1
 
--- TAB TITLE
-local tabTitle = Instance.new("TextLabel", content)
-tabTitle.Text = "Farm"
-tabTitle.Size = UDim2.new(1,0,0,50)
-tabTitle.TextColor3 = COLOR_ACCENT
-tabTitle.Font = Enum.Font.GothamBold
-tabTitle.TextSize = 20
-tabTitle.BackgroundTransparency = 1
+local layout = Instance.new("UIListLayout", content)
+layout.Padding = UDim.new(0,12)
 
-----------------------------------------------------------------
--- TOGGLE FUNCTION (GIỐNG BANANA CAT HUB)
-----------------------------------------------------------------
-local function createToggle(text, y, callback)
-    local holder = Instance.new("Frame", content)
-    holder.Position = UDim2.new(0,20,0,y)
-    holder.Size = UDim2.new(1,-40,0,45)
-    holder.BackgroundColor3 = Color3.fromRGB(25,25,25)
+layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    content.CanvasSize = UDim2.new(0,0,0,layout.AbsoluteContentSize.Y + 20)
+end)
+
+-- CREATE TOGGLE
+local function createToggle(text, callback)
+    local holder = Instance.new("Frame")
+    holder.Size = UDim2.new(1,-40,0,50)
+    holder.BackgroundColor3 = Color3.fromRGB(30,30,30)
     holder.BorderSizePixel = 0
+    holder.Parent = content
+
+    local corner = Instance.new("UICorner", holder)
+    corner.CornerRadius = UDim.new(0,10)
 
     local label = Instance.new("TextLabel", holder)
     label.Text = text
-    label.Position = UDim2.new(0,15,0,0)
-    label.Size = UDim2.new(1,-70,1,0)
+    label.Size = UDim2.new(1,-80,1,0)
+    label.Position = UDim2.new(0,20,0,0)
     label.TextColor3 = Color3.fromRGB(230,230,230)
     label.Font = Enum.Font.Gotham
-    label.TextSize = 15
-    label.BackgroundTransparency = 1
+    label.TextSize = 16
     label.TextXAlignment = Left
+    label.BackgroundTransparency = 1
 
-    local toggle = Instance.new("TextButton", holder)
-    toggle.Size = UDim2.new(0,28,0,28)
-    toggle.Position = UDim2.new(1,-40,0.5,-14)
-    toggle.Text = ""
-    toggle.BackgroundColor3 = Color3.fromRGB(40,40,40)
-    toggle.BorderSizePixel = 0
+    local button = Instance.new("TextButton", holder)
+    button.Size = UDim2.new(0,36,0,36)
+    button.Position = UDim2.new(1,-50,0.5,-18)
+    button.BackgroundColor3 = Color3.fromRGB(60,60,60)
+    button.Text = ""
+    button.BorderSizePixel = 0
 
-    local state = false
-    toggle.MouseButton1Click:Connect(function()
-        state = not state
-        toggle.BackgroundColor3 = state and COLOR_ACCENT or Color3.fromRGB(40,40,40)
+    local bc = Instance.new("UICorner", button)
+    bc.CornerRadius = UDim.new(1,0)
+
+    local on = false
+    button.MouseButton1Click:Connect(function()
+        on = not on
+        button.BackgroundColor3 = on and COLOR or Color3.fromRGB(60,60,60)
         if callback then
-            callback(state)
+            task.spawn(function()
+                callback(on)
+            end)
         end
     end)
 end
 
-----------------------------------------------------------------
--- BANANA SCRIPT (LOAD 1 LẦN DUY NHẤT)
-----------------------------------------------------------------
-local BananaLoaded = false
-
-createToggle("Banana Mode (Zis ENG)", 70, function(on)
-    if on and not BananaLoaded then
-        BananaLoaded = true
-        task.spawn(function()
-            local banana = loadstring(game:HttpGet(
-                "https://raw.githubusercontent.com/LuaCrack/Zis/main/ZisChuoiEng"
-            ))
-            if banana then
-                banana()
-            end
-        end)
+-- ===============================
+-- 🔥 BANANA SCRIPT
+-- ===============================
+local bananaLoaded = false
+local function BananaScript(state)
+    if state and not bananaLoaded then
+        bananaLoaded = true
+        loadstring(game:HttpGet(
+            "https://raw.githubusercontent.com/LuaCrack/Zis/refs/heads/main/ZisChuoiEng"
+        ))()
     end
-end)
+end
 
-----------------------------------------------------------------
--- UI DEMO TOGGLES (CHƯA GẮN SCRIPT)
-----------------------------------------------------------------
-createToggle("Auto Farm Level", 125)
-createToggle("Auto Travel Dressrosa", 180)
-createToggle("Auto Zou Quest", 235)
-createToggle("Auto Farm Nearest", 290)
-createToggle("Auto Factory Raid", 345)
+-- ===============================
+-- TOGGLES (GIỐNG BANANA HUB)
+-- ===============================
+createToggle("🍌 Banana Mode (Auto Farm)", BananaScript)
+createToggle("Auto Farm Level", function(v) end)
+createToggle("Auto Farm Nearest", function(v) end)
+createToggle("Auto Factory Raid", function(v) end)
+createToggle("Auto Travel / Quest", function(v) end)
+
+print("🍌 Banana Cat Hub Loaded Successfully!")
