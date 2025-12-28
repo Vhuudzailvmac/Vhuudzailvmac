@@ -1,0 +1,139 @@
+--// Banana Cat Hub Style | FULL VERSION
+local player = game.Players.LocalPlayer
+
+-- CONFIG
+local HUB_NAME = "Banana Cat Hub [Premium]"
+local HUB_BY = "by Vhuu"
+local LOGO_ID = "rbxassetid://83190276951914"
+local COLOR_ACCENT = Color3.fromRGB(0,255,200)
+
+-- GUI
+local gui = Instance.new("ScreenGui")
+gui.Name = "BananaHubUI"
+gui.ResetOnSpawn = false
+gui.Parent = player:WaitForChild("PlayerGui")
+
+-- MAIN FRAME
+local main = Instance.new("Frame", gui)
+main.Size = UDim2.new(0,720,0,420)
+main.Position = UDim2.new(0.5,-360,0.5,-210)
+main.BackgroundColor3 = Color3.fromRGB(18,18,18)
+main.BorderSizePixel = 0
+main.Active = true
+main.Draggable = true
+
+-- SIDEBAR
+local sidebar = Instance.new("Frame", main)
+sidebar.Size = UDim2.new(0,210,1,0)
+sidebar.BackgroundColor3 = Color3.fromRGB(22,22,22)
+sidebar.BorderSizePixel = 0
+
+-- LOGO
+local logo = Instance.new("ImageLabel", sidebar)
+logo.Image = LOGO_ID
+logo.Size = UDim2.new(0,70,0,70)
+logo.Position = UDim2.new(0,15,0,15)
+logo.BackgroundTransparency = 1
+
+-- TITLE
+local title = Instance.new("TextLabel", sidebar)
+title.Text = HUB_NAME
+title.Position = UDim2.new(0,95,0,25)
+title.Size = UDim2.new(0,110,0,25)
+title.TextColor3 = COLOR_ACCENT
+title.Font = Enum.Font.GothamBold
+title.TextSize = 18
+title.BackgroundTransparency = 1
+title.TextXAlignment = Left
+
+-- BY
+local by = Instance.new("TextLabel", sidebar)
+by.Text = HUB_BY
+by.Position = UDim2.new(0,95,0,50)
+by.Size = UDim2.new(0,110,0,20)
+by.TextColor3 = Color3.fromRGB(180,180,180)
+by.Font = Enum.Font.Gotham
+by.TextSize = 12
+by.BackgroundTransparency = 1
+by.TextXAlignment = Left
+
+-- CONTENT
+local content = Instance.new("Frame", main)
+content.Position = UDim2.new(0,210,0,0)
+content.Size = UDim2.new(1,-210,1,0)
+content.BackgroundColor3 = Color3.fromRGB(15,15,15)
+content.BorderSizePixel = 0
+
+-- TAB TITLE
+local tabTitle = Instance.new("TextLabel", content)
+tabTitle.Text = "Farm"
+tabTitle.Size = UDim2.new(1,0,0,50)
+tabTitle.TextColor3 = COLOR_ACCENT
+tabTitle.Font = Enum.Font.GothamBold
+tabTitle.TextSize = 20
+tabTitle.BackgroundTransparency = 1
+
+----------------------------------------------------------------
+-- TOGGLE FUNCTION (GIỐNG BANANA CAT HUB)
+----------------------------------------------------------------
+local function createToggle(text, y, callback)
+    local holder = Instance.new("Frame", content)
+    holder.Position = UDim2.new(0,20,0,y)
+    holder.Size = UDim2.new(1,-40,0,45)
+    holder.BackgroundColor3 = Color3.fromRGB(25,25,25)
+    holder.BorderSizePixel = 0
+
+    local label = Instance.new("TextLabel", holder)
+    label.Text = text
+    label.Position = UDim2.new(0,15,0,0)
+    label.Size = UDim2.new(1,-70,1,0)
+    label.TextColor3 = Color3.fromRGB(230,230,230)
+    label.Font = Enum.Font.Gotham
+    label.TextSize = 15
+    label.BackgroundTransparency = 1
+    label.TextXAlignment = Left
+
+    local toggle = Instance.new("TextButton", holder)
+    toggle.Size = UDim2.new(0,28,0,28)
+    toggle.Position = UDim2.new(1,-40,0.5,-14)
+    toggle.Text = ""
+    toggle.BackgroundColor3 = Color3.fromRGB(40,40,40)
+    toggle.BorderSizePixel = 0
+
+    local state = false
+    toggle.MouseButton1Click:Connect(function()
+        state = not state
+        toggle.BackgroundColor3 = state and COLOR_ACCENT or Color3.fromRGB(40,40,40)
+        if callback then
+            callback(state)
+        end
+    end)
+end
+
+----------------------------------------------------------------
+-- BANANA SCRIPT (LOAD 1 LẦN DUY NHẤT)
+----------------------------------------------------------------
+local BananaLoaded = false
+
+createToggle("Banana Mode (Zis ENG)", 70, function(on)
+    if on and not BananaLoaded then
+        BananaLoaded = true
+        task.spawn(function()
+            local banana = loadstring(game:HttpGet(
+                "https://raw.githubusercontent.com/LuaCrack/Zis/main/ZisChuoiEng"
+            ))
+            if banana then
+                banana()
+            end
+        end)
+    end
+end)
+
+----------------------------------------------------------------
+-- UI DEMO TOGGLES (CHƯA GẮN SCRIPT)
+----------------------------------------------------------------
+createToggle("Auto Farm Level", 125)
+createToggle("Auto Travel Dressrosa", 180)
+createToggle("Auto Zou Quest", 235)
+createToggle("Auto Farm Nearest", 290)
+createToggle("Auto Factory Raid", 345)
