@@ -1,0 +1,306 @@
+--// GRAVITY HUB | BLOX FRUITS
+--// Fluent UI | No Key | Sea 1 - Sea 3
+--// Icon Toggle like Téo Hub | FULL AUTO
+
+repeat task.wait() until game:IsLoaded()
+
+--------------------------------------------------
+-- SERVICES
+--------------------------------------------------
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+local VirtualUser = game:GetService("VirtualUser")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+local TeleportService = game:GetService("TeleportService")
+
+local LocalPlayer = Players.LocalPlayer
+local CommF = ReplicatedStorage.Remotes.CommF_
+
+--------------------------------------------------
+-- SPLASH SCREEN
+--------------------------------------------------
+pcall(function()
+    CoreGui.GravitySplash:Destroy()
+end)
+
+do
+    local gui = Instance.new("ScreenGui", CoreGui)
+    gui.Name = "GravitySplash"
+
+    local frame = Instance.new("Frame", gui)
+    frame.Size = UDim2.fromScale(1,1)
+    frame.BackgroundColor3 = Color3.fromRGB(10,10,10)
+
+    local text = Instance.new("TextLabel", frame)
+    text.Size = UDim2.fromOffset(400,60)
+    text.Position = UDim2.fromScale(0.5,0.5)
+    text.AnchorPoint = Vector2.new(0.5,0.5)
+    text.Text = "VHUU HUB"
+    text.TextSize = 36
+    text.Font = Enum.Font.GothamBold
+    text.TextColor3 = Color3.fromRGB(170,0,255)
+    text.BackgroundTransparency = 1
+
+    TweenService:Create(frame, TweenInfo.new(1), {BackgroundTransparency = 1}):Play()
+    task.wait(1.8)
+    gui:Destroy()
+end
+
+--------------------------------------------------
+-- ICON FLOAT BUTTON (TÉO STYLE)
+--------------------------------------------------
+pcall(function()
+    CoreGui.GravityToggle:Destroy()
+end)
+
+local ScreenGui = Instance.new("ScreenGui", CoreGui)
+ScreenGui.Name = "GravityToggle"
+
+local ImageButton = Instance.new("ImageButton", ScreenGui)
+ImageButton.Size = UDim2.new(0,40,0,40)
+ImageButton.Position = UDim2.new(0.1,0,0.3,0)
+ImageButton.BackgroundColor3 = Color3.fromRGB(0,0,0)
+ImageButton.BorderSizePixel = 0
+ImageButton.Image = "https://www.roblox.com/asset/?id=130297704555355"
+ImageButton.Draggable = true
+ImageButton.Active = true
+
+Instance.new("UICorner", ImageButton).CornerRadius = UDim.new(1,10)
+
+ImageButton.MouseButton1Down:Connect(function()
+    VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.End, false, game)
+end)
+
+--------------------------------------------------
+-- ANTI AFK
+--------------------------------------------------
+LocalPlayer.Idled:Connect(function()
+    VirtualUser:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+    task.wait(1)
+    VirtualUser:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+end)
+
+--------------------------------------------------
+-- SEA CHECK
+--------------------------------------------------
+local Sea1,Sea2,Sea3=false,false,false
+if game.PlaceId==2753915549 then Sea1=true
+elseif game.PlaceId==4442272183 then Sea2=true
+elseif game.PlaceId==7449423635 then Sea3=true end
+
+--------------------------------------------------
+-- FLUENT UI
+--------------------------------------------------
+local Fluent = loadstring(game:HttpGet(
+"https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+
+local Window = Fluent:CreateWindow({
+    Title = "Vhuu Hub [Premium]",
+    SubTitle = "Blox Fruits",
+    Size = UDim2.fromOffset(560,360),
+    Acrylic = true,
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.End
+})
+
+local Tabs = {
+    Farm = Window:AddTab({Title="Auto Farm"}),
+    Boss = Window:AddTab({Title="Boss"}),
+    Race = Window:AddTab({Title="Race V4"}),
+    Fruit = Window:AddTab({Title="Fruit / Chest"}),
+    Combat = Window:AddTab({Title="Combat"}),
+    Stats = Window:AddTab({Title="Stats"}),
+    Settings = Window:AddTab({Title="Settings"})
+}
+
+--------------------------------------------------
+-- FLAGS
+--------------------------------------------------
+getgenv().AutoFarm = false
+getgenv().AutoBoss = false
+getgenv().AutoFruit = false
+getgenv().AutoChest = false
+getgenv().AutoRaid = false
+getgenv().AutoRaceV4 = false
+getgenv().FastAttack = true
+getgenv().AutoStats = false
+getgenv().AutoMastery = false
+
+--------------------------------------------------
+-- QUEST DATA (AUTO FARM)
+--------------------------------------------------
+local function GetQuest()
+    local Lv = LocalPlayer.Data.Level.Value
+    if Sea1 then
+        if Lv<=9 then return "BanditQuest1",1,"Bandit"
+        elseif Lv<=29 then return "JungleQuest",2,"Gorilla"
+        elseif Lv<=59 then return "BuggyQuest1",1,"Pirate"
+        elseif Lv<=99 then return "DesertQuest",1,"Desert Bandit"
+        end
+    elseif Sea2 then
+        if Lv<=774 then return "Area1Quest",1,"Raider"
+        elseif Lv<=899 then return "Area2Quest",1,"Swan Pirate"
+        end
+    elseif Sea3 then
+        if Lv<=1724 then return "PiratePortQuest",1,"Pirate Millionaire"
+        end
+    end
+end
+
+--------------------------------------------------
+-- AUTO FARM QUEST
+--------------------------------------------------
+task.spawn(function()
+    while task.wait(0.3) do
+        if getgenv().AutoFarm then
+            local q,l,m = GetQuest()
+            if q then
+                pcall(function() CommF:InvokeServer("StartQuest",q,l) end)
+                for _,v in pairs(Workspace.Enemies:GetChildren()) do
+                    if v.Name==m and v:FindFirstChild("HumanoidRootPart")
+                    and v.Humanoid.Health>0 then
+                        LocalPlayer.Character.HumanoidRootPart.CFrame =
+                        v.HumanoidRootPart.CFrame * CFrame.new(0,0,3)
+                        break
+                    end
+                end
+            end
+        end
+    end
+end)
+
+--------------------------------------------------
+-- AUTO BOSS THEO LEVEL
+--------------------------------------------------
+local BossBySea = {
+    Sea1 = {"The Gorilla King","Vice Admiral","Warden","Chief Warden","Saber Expert"},
+    Sea2 = {"Diamond","Jeremy","Fajita","Don Swan","Smoke Admiral"},
+    Sea3 = {"Cake Queen","Dough King","Soul Reaper","Tide Keeper"}
+}
+
+task.spawn(function()
+    while task.wait(0.5) do
+        if getgenv().AutoBoss then
+            local list = Sea1 and BossBySea.Sea1 or Sea2 and BossBySea.Sea2 or BossBySea.Sea3
+            for _,b in pairs(Workspace.Enemies:GetChildren()) do
+                if table.find(list,b.Name)
+                and b:FindFirstChild("HumanoidRootPart")
+                and b.Humanoid.Health>0 then
+                    LocalPlayer.Character.HumanoidRootPart.CFrame =
+                    b.HumanoidRootPart.CFrame * CFrame.new(0,0,6)
+                    break
+                end
+            end
+        end
+    end
+end)
+
+--------------------------------------------------
+-- AUTO RAID (FLAME)
+--------------------------------------------------
+task.spawn(function()
+    while task.wait(2) do
+        if getgenv().AutoRaid then
+            pcall(function()
+                CommF:InvokeServer("RaidsNpc","Select","Flame")
+                CommF:InvokeServer("RaidsNpc","Start")
+            end)
+        end
+    end
+end)
+
+--------------------------------------------------
+-- AUTO FRUIT + CHEST
+--------------------------------------------------
+task.spawn(function()
+    while task.wait(1) do
+        if getgenv().AutoFruit then
+            for _,v in pairs(Workspace:GetChildren()) do
+                if v:IsA("Tool") and v:FindFirstChild("Handle") then
+                    LocalPlayer.Character.HumanoidRootPart.CFrame = v.Handle.CFrame
+                end
+            end
+        end
+        if getgenv().AutoChest then
+            for _,c in pairs(Workspace:GetDescendants()) do
+                if c:IsA("Model") and c.Name:lower():find("chest")
+                and c:FindFirstChild("Hitbox") then
+                    LocalPlayer.Character.HumanoidRootPart.CFrame = c.Hitbox.CFrame
+                end
+            end
+        end
+    end
+end)
+
+--------------------------------------------------
+-- AUTO RACE V4 / TRIAL
+--------------------------------------------------
+task.spawn(function()
+    while task.wait(2) do
+        if getgenv().AutoRaceV4 then
+            pcall(function()
+                CommF:InvokeServer("RaceV4Progress","Check")
+                CommF:InvokeServer("RaceV4Progress","Continue")
+            end)
+        end
+    end
+end)
+
+--------------------------------------------------
+-- AUTO STATS + MASTERY
+--------------------------------------------------
+task.spawn(function()
+    while task.wait(1) do
+        if getgenv().AutoStats then
+            pcall(function()
+                CommF:InvokeServer("AddPoint","Melee",1)
+                CommF:InvokeServer("AddPoint","Defense",1)
+                CommF:InvokeServer("AddPoint","Sword",1)
+                CommF:InvokeServer("AddPoint","Demon Fruit",1)
+            end)
+        end
+        if getgenv().AutoMastery then
+            pcall(function()
+                CommF:InvokeServer("BuyHaki","Buso")
+            end)
+        end
+    end
+end)
+
+--------------------------------------------------
+-- FAST ATTACK (GRAVITY)
+--------------------------------------------------
+task.spawn(function()
+    local Net = require(ReplicatedStorage.Modules.Net)
+    while task.wait(0.05) do
+        if getgenv().FastAttack then
+            pcall(function()
+                Net["RE/RegisterAttack"]:FireServer()
+                Net["RE/RegisterHit"]:FireServer()
+            end)
+        end
+    end
+end)
+
+--------------------------------------------------
+-- UI TOGGLES
+--------------------------------------------------
+Tabs.Farm:AddToggle("AF",{Title="Auto Farm Level",Callback=function(v) getgenv().AutoFarm=v end})
+Tabs.Boss:AddToggle("AB",{Title="Auto Boss (Theo Level)",Callback=function(v) getgenv().AutoBoss=v end})
+Tabs.Race:AddToggle("AR4",{Title="Auto Race V4 / Trial",Callback=function(v) getgenv().AutoRaceV4=v end})
+Tabs.Fruit:AddToggle("AFR",{Title="Auto Fruit",Callback=function(v) getgenv().AutoFruit=v end})
+Tabs.Fruit:AddToggle("ACH",{Title="Auto Chest",Callback=function(v) getgenv().AutoChest=v end})
+Tabs.Combat:AddToggle("FA",{Title="Fast Attack",Default=true,Callback=function(v) getgenv().FastAttack=v end})
+Tabs.Combat:AddToggle("AR",{Title="Auto Raid (Flame)",Callback=function(v) getgenv().AutoRaid=v end})
+Tabs.Stats:AddToggle("AS",{Title="Auto Stats",Callback=function(v) getgenv().AutoStats=v end})
+Tabs.Stats:AddToggle("AM",{Title="Auto Mastery / Haki",Callback=function(v) getgenv().AutoMastery=v end})
+
+Tabs.Settings:AddButton({
+    Title="Rejoin Server",
+    Callback=function()
+        TeleportService:Teleport(game.PlaceId)
+    end
+})})
