@@ -1,0 +1,18 @@
+
+
+local HinishiLibDemo = (loadstring(game:HttpGet("https://files.catbox.moe/0pqkl7.lua", true)))();
+local 36 = HinishiLibDemo:CreateWindow({
+		Title = "Vhuu Hub - Blox Fruits"
+		TitleIcon = "rbxassetid://130297704555355",
+		Image = "rbxassetid://130297704555355",
+		Search = true,
+		Icon = "rbxassetid://130297704555355",
+		TabWidth = 150,
+		Theme = "Universe",
+		Acrylic = false,
+		Size = UDim2.fromOffset(550, 400),
+		MinimizeKey = Enum.KeyCode.End,
+		BackgroundImage = "rbxassetid://130297704555355",
+		BackgroundTransparency = 0,
+		DropdownsOutsideWindow = true,
+	});
